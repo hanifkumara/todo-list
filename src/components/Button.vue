@@ -14,6 +14,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+button{
+  margin: 0 5px;
+}
 </style>

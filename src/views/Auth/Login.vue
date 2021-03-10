@@ -2,8 +2,9 @@
   <div>
     <form @submit.prevent="login">
       <h4>Login</h4>
-      <Input name="Email" forId="email" placeholder="Please input your email" type="text" />
-      <Input icon="ic_sharp-remove-red-eye.png" name="Password" forId="password" placeholder="Please input your password" type="password" />
+      <Input name="Email" forId="email" placeholder="Please input your email" type="text" @input="email= $event.target.value" />
+      {{password}}
+      <Input icon="ic_sharp-remove-red-eye.png" name="Password" forId="password" placeholder="Please input your password" type="password" @input="password= $event.target.value"/>
       <div class="d-flex justify-content-end">
         <Button title="Login" color="btn btn-success"/>
       </div>
@@ -17,6 +18,12 @@ import Button from '@/components/Button.vue'
 
 export default {
   name: 'Login',
+  data () {
+    return {
+      email: '',
+      password: ''
+    }
+  },
   components: {
     Input,
     Button

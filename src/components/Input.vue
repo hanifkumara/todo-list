@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper-input">
     <label :for="[icon ? 'show' : forId]">{{name}}</label>
-    <input :type="type" :placeholder="placeholder" :id="[icon ? 'show' : forId]" :name="name">
+    <input :type="type" :placeholder="placeholder" :id="[icon ? 'show' : forId]" :name="name" :value="value" @input="activate">
     <div v-if="icon" class="icon-eye" @click="showPassword">
       <img :src="require(`@/assets/images/${icon}`)" alt="icon-eye">
     </div>
@@ -14,12 +14,19 @@ import showPass from '@/mixins/showPassword.js'
 export default {
   name: 'Input',
   mixins: [showPass],
+  methods: {
+    activate (value) {
+      this.$emit('input', value)
+    }
+  },
   props: {
     forId: String,
     type: String,
     placeholder: String,
     name: String,
-    icon: String
+    icon: String,
+    value: String,
+    formValidation: String
   }
 }
 </script>
