@@ -14,28 +14,19 @@
             <thead>
               <tr>
                 <th scope="col">No</th>
-                <th scope="col">Label</th>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
+              <tr v-for="(data, index) in usersConfirmed" :key="data.id">
+                <th scope="row">{{index+1}}</th>
+                <td>{{data.username}}</td>
+                <td>{{data.email}}</td>
                 <td>
-                  <div class="badge badge-warning mr-2">Edit</div>
-                  <div class="badge badge-danger">Delete</div>
+                  <div class="badge badge-danger" @click="handleDelete(data.id)">Delete</div>
                 </td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>@twitter</td>
               </tr>
             </tbody>
           </table>
@@ -48,25 +39,20 @@
             <thead>
               <tr>
                 <th scope="col">No</th>
-                <th scope="col">Label</th>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>@twitter</td>
+              <tr v-for="(data, index) in usersNotConfirmed" :key="data.id">
+                <th scope="row">{{index+1}}</th>
+                <td>{{data.username}}</td>
+                <td>{{data.email}}</td>
+                <td>
+                  <div class="badge badge-danger" @click="handleDelete(data.id)">Delete</div>
+                  <div class="badge badge-success" @click="confirmation(data.id)">Confirmed</div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -78,11 +64,44 @@
 
 <script>
 import Button from '@/components/Button.vue'
+import { mapActions, mapGetters } from 'vuex'
+import Swal from 'sweetalert2'
 
 export default {
   name: 'ManageUsers',
   components: {
     Button
+  },
+  methods: {
+    ...mapActions(['setUsersConfirmed', 'setUsersNotConfirmed', 'update', 'deleteUser']),
+    confirmation (idUser) {
+      console.log(idUser)
+      this.update({ confirmation: 1, idUser })
+        .then((result) => {
+          this.setUsersConfirmed()
+          this.setUsersNotConfirmed()
+          Swal.fire(result.message, '', 'success')
+        }).catch((err) => {
+          Swal.fire(err, '', 'errror')
+        })
+    },
+    handleDelete (idUser) {
+      this.deleteUser(idUser)
+        .then((result) => {
+          this.setUsersConfirmed()
+          this.setUsersNotConfirmed()
+          Swal.fire(result.message, '', 'success')
+        }).catch((err) => {
+          Swal.fire(err, '', 'errror')
+        })
+    }
+  },
+  mounted () {
+    this.setUsersConfirmed()
+    this.setUsersNotConfirmed()
+  },
+  computed: {
+    ...mapGetters(['usersConfirmed', 'usersNotConfirmed'])
   }
 }
 </script>
@@ -92,5 +111,8 @@ export default {
   display: flex;
   justify-content: space-between;
   width: 50%;
+}
+.badge{
+  cursor: pointer;
 }
 </style>

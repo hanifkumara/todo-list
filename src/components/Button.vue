@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button :class="color">{{title}}</button>
+    <button :class="color" :type="type">{{title}}</button>
   </div>
 </template>
 
@@ -9,7 +9,8 @@ export default {
   name: 'Button',
   props: {
     title: String,
-    color: String
+    color: String,
+    type: String
   }
 }
 </script>

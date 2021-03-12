@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Swal from 'sweetalert2'
+import store from '../store/index'
 import Auth from '../views/Auth/Auth.vue'
 import Login from '../views/Auth/Login.vue'
 import Signup from '../views/Auth/Signup.vue'
@@ -9,6 +11,11 @@ import ManageLabels from '../views/Admin/ManageLabels.vue'
 import ManageUsers from '../views/Admin/ManageUsers.vue'
 import AddLabels from '../views/Admin/AddLabels.vue'
 import AddUsers from '../views/Admin/AddUsers.vue'
+import User from '../views/User/User.vue'
+import HomeUser from '../views/User/HomeUser.vue'
+import Todos from '../views/Todos/Todos.vue'
+import HomeTodos from '../views/Todos/Home.vue'
+import AddTodo from '../views/Todos/AddTodo.vue'
 
 Vue.use(VueRouter)
 
@@ -18,6 +25,7 @@ const routes = [
     name: 'Auth',
     component: Auth,
     redirect: '/login',
+    meta: { requiresVisitor: true },
     children: [
       {
         path: 'login',
@@ -36,6 +44,7 @@ const routes = [
     name: 'Admin',
     component: Admin,
     redirect: '/admin/home',
+    meta: { requiresAuth: true },
     children: [
       {
         path: 'home',
@@ -65,6 +74,39 @@ const routes = [
     ]
   },
   {
+    path: '/user',
+    name: 'User',
+    component: User,
+    redirect: '/user/home-user',
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'home-user',
+        name: 'HomeUser',
+        component: HomeUser
+      }
+    ]
+  },
+  {
+    path: '/todos',
+    name: 'Todos',
+    component: Todos,
+    redirect: '/todos/home',
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'home',
+        name: 'HomeTodos',
+        component: HomeTodos
+      },
+      {
+        path: 'add-todo',
+        name: 'AddTodo',
+        component: AddTodo
+      }
+    ]
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting
@@ -78,6 +120,39 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!store.getters.isLogin) {
+      Swal.fire(
+        'Must be logged in!!',
+        '',
+        'error'
+      )
+      next({
+        path: '/login'
+      })
+    } else {
+      next()
+    }
+  } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+    if (store.getters.isLogin) {
+      Swal.fire(
+        'You already logged in!!',
+        '',
+        'warning'
+      )
+      next({
+        path: '/admin/home'
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // make sure to always call next()!
+  }
 })
 
 export default router

@@ -16,20 +16,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
+          <tr v-for="(data, index) in getLabels" :key="data.id">
+            <th scope="row">{{index+1}}</th>
+            <td>{{data.label}}</td>
             <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>@twitter</td>
           </tr>
         </tbody>
       </table>
@@ -39,11 +29,21 @@
 
 <script>
 import Button from '@/components/Button.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ManageLabels',
   components: {
     Button
+  },
+  mounted () {
+    this.setGetLabels()
+  },
+  methods: {
+    ...mapActions(['setGetLabels'])
+  },
+  computed: {
+    ...mapGetters(['getLabels'])
   }
 }
 </script>

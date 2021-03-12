@@ -2,8 +2,8 @@
   <div>
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
-        <h1 class="display-4">Hello Admin</h1>
-        <p class="lead">Please Arrage your App</p>
+        <h1 class="display-4">Hello {{profile.username}}</h1>
+        <p class="lead">Welcome to Todo list app</p>
         <router-link :to="{name: 'Todos'}">
           <Button title="Get started" color="btn btn-primary"/>
         </router-link>
@@ -16,7 +16,10 @@
 import Button from '@/components/Button'
 
 export default {
-  name: 'Home',
+  name: 'HomeUser',
+  props: {
+    profile: String
+  },
   components: {
     Button
   }

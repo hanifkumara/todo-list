@@ -3,7 +3,16 @@
     <nav class="bg-primary">
       <div class="container d-flex justify-content-between">
         <div class="nav-left">
-          <h4 class="text-white">TODO-LIST</h4>
+          <div v-if="role === 'admin'">
+            <router-link :to="{name: 'Admin'}">
+              <h4 class="text-white">TODO-LIST</h4>
+            </router-link>
+          </div>
+          <div v-else>
+            <router-link :to="{name: 'Users'}">
+              <h4 class="text-white">TODO-LIST</h4>
+            </router-link>
+          </div>
         </div>
         <div class="nav-right">
           <div class="d-flex" v-if="this.$route.name === 'Login' || this.$route.name === 'Signup'">
@@ -14,15 +23,23 @@
               <Button title="Signup" color="btn btn-success"/>
             </router-link>
           </div>
-          <div class="d-flex" v-else>
-            <router-link :to="{name: 'ManageLabels'}">
-              <Button title="ManageLabels" color="btn btn-success"/>
-            </router-link>
-            <router-link :to="{name: 'ManageUsers'}">
-              <Button title="Manage Users" color="btn btn-success"/>
-            </router-link>
-            <div @click="logout">
-              <Button title="Logout" color="btn btn-danger"/>
+          <div v-else>
+            <div class="d-flex" v-if="role === 'admin'">
+              <router-link :to="{name: 'ManageLabels'}">
+                <Button title="ManageLabels" color="btn btn-success"/>
+              </router-link>
+              <router-link :to="{name: 'ManageUsers'}">
+                <Button title="Manage Users" color="btn btn-success"/>
+              </router-link>
+              <div @click="logout">
+                <Button title="Logout" color="btn btn-danger"/>
+              </div>
+            </div>
+            <div class="d-flex align-items-center" v-else>
+              <div class="email">{{myProfile.email}}</div>
+              <div @click="logout">
+                <Button title="Logout" color="btn btn-danger"/>
+              </div>
             </div>
           </div>
         </div>
@@ -33,19 +50,27 @@
 
 <script>
 import Button from '@/components/Button.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Navbar',
+  data () {
+    return {
+      role: localStorage.getItem('role')
+    }
+  },
   components: {
     Button
   },
-  methods: {
-    logout () {
-      console.log('hello')
-    }
-  },
   mounted () {
     console.log(this.$route)
+    this.setMyProfile()
+  },
+  methods: {
+    ...mapActions(['logout', 'setMyProfile'])
+  },
+  computed: {
+    ...mapGetters(['myProfile'])
   }
 }
 </script>
@@ -53,5 +78,9 @@ export default {
 <style scoped>
 nav{
   padding: 16px 0;
+}
+.email{
+  font-size: 21px;
+  color: rgb(255, 255, 255);
 }
 </style>
