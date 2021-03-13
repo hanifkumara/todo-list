@@ -11,9 +11,12 @@ export default new Vuex.Store({
     token: '' || localStorage.getItem('token'),
     usersConfirmed: [],
     usersNotConfirmed: [],
+    myProfile: {},
+    getUserId: {},
     getLabels: [],
+    getLabelId: {},
     getTodos: [],
-    myProfile: {}
+    getTodoId: {}
   },
   mutations: {
     SET_AUTH (state, payload) {
@@ -36,27 +39,69 @@ export default new Vuex.Store({
     },
     SET_MY_PROFILE (state, payload) {
       state.myProfile = payload
+    },
+    SET_LABEL_ID (state, payload) {
+      state.getLabelId = payload
+    },
+    SET_USER_ID (state, payload) {
+      state.getUserId = payload
+    },
+    SET_TODO_BY_ID (state, payload) {
+      state.getTodoId = payload
     }
   },
   actions: {
-    setMyProfile (context, payload) {
-      return new Promise((resolve, reject) => {
-        axios.get(`${process.env.VUE_APP_SERVICE_API}/users/my-profile`)
-          .then(res => {
-            const { result } = res.data
-            context.commit('SET_MY_PROFILE', result[0])
-            resolve(result)
-          }).catch((err) => {
-            reject(err.response.data.err.message)
-          })
-      })
-    },
     setGetLabels (context, payload) {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.VUE_APP_SERVICE_API}/labels`)
           .then(res => {
             const { result } = res.data
             context.commit('SET_LABELS', result)
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    setGetLabelId (context, idLabel) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.VUE_APP_SERVICE_API}/labels/${idLabel}`)
+          .then(res => {
+            const { result } = res.data
+            context.commit('SET_LABEL_ID', result[0])
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    addLabels (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.post(`${process.env.VUE_APP_SERVICE_API}/labels`, payload)
+          .then(res => {
+            const { result } = res.data
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    updateLabel (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.patch(`${process.env.VUE_APP_SERVICE_API}/labels`, payload)
+          .then(res => {
+            const { result } = res.data
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    deleteLabel (context, idLabel) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`${process.env.VUE_APP_SERVICE_API}/labels/${idLabel}`)
+          .then(res => {
+            const { result } = res.data
             resolve(result)
           }).catch((err) => {
             reject(err.response.data.err.message)
@@ -75,9 +120,54 @@ export default new Vuex.Store({
           })
       })
     },
+    setTodoById (context, idTodo) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.VUE_APP_SERVICE_API}/todos/${idTodo}`)
+          .then(res => {
+            const { result } = res.data
+            context.commit('SET_TODO_BY_ID', result[0])
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
     addTodos (context, payload) {
       return new Promise((resolve, reject) => {
         axios.post(`${process.env.VUE_APP_SERVICE_API}/todos`, payload)
+          .then(res => {
+            const { result } = res.data
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    updateTodo (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.patch(`${process.env.VUE_APP_SERVICE_API}/todos`, payload)
+          .then(res => {
+            const { result } = res.data
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    completedTodos (context, idTodos) {
+      return new Promise((resolve, reject) => {
+        axios.patch(`${process.env.VUE_APP_SERVICE_API}/todos/${idTodos}`)
+          .then(res => {
+            const { result } = res.data
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    updateTodos (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.patch(`${process.env.VUE_APP_SERVICE_API}/todos`, payload)
           .then(res => {
             const { result } = res.data
             resolve(result)
@@ -115,6 +205,30 @@ export default new Vuex.Store({
           .then(res => {
             const { result } = res.data
             context.commit('SET_USERS_NOT_CONFIRMED', result)
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    setMyProfile (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.VUE_APP_SERVICE_API}/users/my-profile`)
+          .then(res => {
+            const { result } = res.data
+            context.commit('SET_MY_PROFILE', result[0])
+            resolve(result)
+          }).catch((err) => {
+            reject(err.response.data.err.message)
+          })
+      })
+    },
+    setUserById (context, idUser) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.VUE_APP_SERVICE_API}/users/${idUser}`)
+          .then(res => {
+            const { result } = res.data
+            context.commit('SET_USER_ID', result[0])
             resolve(result)
           }).catch((err) => {
             reject(err.response.data.err.message)
@@ -202,7 +316,7 @@ export default new Vuex.Store({
             Swal.fire(error.response.data.err.message, 'Please login again', 'error')
             localStorage.clear()
             context.commit('REMOVE_TOKEN')
-            router.push({ name: 'Login' })
+            router.push({ name: 'Auth' })
           } else if (error.response.data.err.message === 'Token Expired') {
             Swal.fire(error.response.data.err.message, 'Please login again', 'error')
             localStorage.clear()
@@ -232,6 +346,12 @@ export default new Vuex.Store({
     },
     myProfile (state) {
       return state.myProfile
+    },
+    getUserId (state) {
+      return state.getUserId
+    },
+    getTodoId (state) {
+      return state.getTodoId
     }
   },
   modules: {

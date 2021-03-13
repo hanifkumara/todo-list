@@ -9,7 +9,7 @@
             </router-link>
           </div>
           <div v-else>
-            <router-link :to="{name: 'Users'}">
+            <router-link :to="{name: 'User'}">
               <h4 class="text-white">TODO-LIST</h4>
             </router-link>
           </div>
@@ -26,7 +26,7 @@
           <div v-else>
             <div class="d-flex" v-if="role === 'admin'">
               <router-link :to="{name: 'ManageLabels'}">
-                <Button title="ManageLabels" color="btn btn-success"/>
+                <Button title="Manage Labels" color="btn btn-success"/>
               </router-link>
               <router-link :to="{name: 'ManageUsers'}">
                 <Button title="Manage Users" color="btn btn-success"/>

@@ -11,11 +11,14 @@ import ManageLabels from '../views/Admin/ManageLabels.vue'
 import ManageUsers from '../views/Admin/ManageUsers.vue'
 import AddLabels from '../views/Admin/AddLabels.vue'
 import AddUsers from '../views/Admin/AddUsers.vue'
+import UpdateLabel from '../views/Admin/UpdateLabel.vue'
+import UpdateUser from '../views/Admin/UpdateUser.vue'
 import User from '../views/User/User.vue'
 import HomeUser from '../views/User/HomeUser.vue'
 import Todos from '../views/Todos/Todos.vue'
 import HomeTodos from '../views/Todos/Home.vue'
 import AddTodo from '../views/Todos/AddTodo.vue'
+import UpdateTodo from '../views/Todos/UpdateTodo'
 
 Vue.use(VueRouter)
 
@@ -70,6 +73,16 @@ const routes = [
         path: 'add-users',
         name: 'AddUsers',
         component: AddUsers
+      },
+      {
+        path: 'update-label/:idLabel',
+        name: 'UpdateLabel',
+        component: UpdateLabel
+      },
+      {
+        path: 'update-user/:idUser',
+        name: 'UpdateUser',
+        component: UpdateUser
       }
     ]
   },
@@ -103,6 +116,11 @@ const routes = [
         path: 'add-todo',
         name: 'AddTodo',
         component: AddTodo
+      },
+      {
+        path: 'todo/:idTodo',
+        name: 'UpdateTodo',
+        component: UpdateTodo
       }
     ]
   },
